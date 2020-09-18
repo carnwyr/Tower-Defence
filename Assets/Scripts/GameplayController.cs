@@ -16,6 +16,7 @@ public class GameplayController
     private float _timer = 0.0f;
     private int _waveCount = 0;
     private bool _gameStarted = false;
+    private GameObject firstWaypoint;
 
     public GameplayController(ILevelSetter levelsetter, IObjectPooler objectPooler)
     {

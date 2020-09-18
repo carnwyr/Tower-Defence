@@ -21,6 +21,7 @@ public class ViewController : MonoBehaviour
     private Action _unsubscribe;
     private Image _background;
     private Vector2 _spawnPosition;
+    private Vector2 _firstWaypoint;
 
     private void Awake()
     {
@@ -81,8 +82,8 @@ public class ViewController : MonoBehaviour
         foreach(var pos in levelData.TowerPositions)
         {
             var tower = Instantiate(_towerPrefab).transform;
-            tower.transform.position = pos;
-            tower.transform.SetParent(parent.transform);
+            tower.position = pos;
+            tower.SetParent(parent.transform);
         }
     }
 
@@ -90,11 +91,15 @@ public class ViewController : MonoBehaviour
     {
         var parent = new GameObject("Waypoints");
 
-        foreach (var pos in levelData.WaypointPositions)
+        for (var i = 0; i < levelData.WaypointPositions.Count; i++)
         {
             var waypoint = Instantiate(_waypointPrefab).transform;
-            waypoint.transform.position = pos;
-            waypoint.transform.SetParent(parent.transform);
+            waypoint.position = levelData.WaypointPositions[i];
+            waypoint.SetParent(parent.transform);
+            if (i == 0)
+            {
+                _firstWaypoint = waypoint.position;
+            }
         }
     }
 
@@ -121,6 +126,7 @@ public class ViewController : MonoBehaviour
 
     private void SpawnEnemy(GameObject enemy)
     {
+        enemy.GetComponent<Enemy>().NextWaypoint = _firstWaypoint;
         enemy.transform.position = _spawnPosition;
         enemy.SetActive(true);
     }
