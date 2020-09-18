@@ -5,13 +5,15 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _sceneSetterObject;
+    private GameObject _viewControllerPrefab;
 
     private GameplayController _gameplayController;
 
     private void Awake()
     {
-        SetDependencies();
+        var viewController = Instantiate(_viewControllerPrefab).GetComponent<ViewController>();
+
+        SetDependencies(viewController);
     }
     void Start()
     {
@@ -23,9 +25,12 @@ public class GameManager : MonoBehaviour
         _gameplayController.Update();
     }
 
-    private void SetDependencies()
+    private void SetDependencies(ViewController viewController)
     {
-        var levelLoader = new AddressableLevelLoader(_sceneSetterObject.GetComponent<SceneSetter>());
-        _gameplayController = new GameplayController(levelLoader);
+        var assetLoader = new AddressableAssetLoader<LevelData>();
+        var levelSetter = new LevelSetter(assetLoader);
+        _gameplayController = new GameplayController(levelSetter);
+
+        viewController.SetDependencies(levelSetter);
     }
 }

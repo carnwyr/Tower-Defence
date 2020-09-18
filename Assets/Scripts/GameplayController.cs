@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class GameplayController
 {
-    private ILevelLoader _levelLoader;
+    private readonly ILevelSetter _levelsetter;
 
-    public GameplayController(ILevelLoader levelLoader)
+    public GameplayController(ILevelSetter levelsetter)
     {
-        _levelLoader = levelLoader;
+        _levelsetter = levelsetter;
     }
 
     public void Start()
     {
-        _levelLoader.LoadLevel(1);
+        _levelsetter.SetUpLevel(1);
     }
 
     public void Update()
