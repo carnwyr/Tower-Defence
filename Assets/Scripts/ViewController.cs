@@ -21,7 +21,7 @@ public class ViewController : MonoBehaviour
     private Action _unsubscribe;
     private Image _background;
     private Vector2 _spawnPosition;
-    private Vector2 _firstWaypoint;
+    private GameObject _firstWaypoint;
 
     private void Awake()
     {
@@ -30,7 +30,7 @@ public class ViewController : MonoBehaviour
         var canvas = Instantiate(_canvasPrefab);
         var background = Instantiate(_backgroundPrefab);
         canvas.GetComponent<Canvas>().worldCamera = camera.GetComponent<Camera>();
-        background.transform.SetParent(canvas.transform);
+        background.transform.SetParent(canvas.transform, false);
         
         _background = background.GetComponent<Image>();
     }
@@ -90,16 +90,21 @@ public class ViewController : MonoBehaviour
     private void SetWaypoints(LevelData levelData)
     {
         var parent = new GameObject("Waypoints");
+        GameObject previousWaypoint = null;
 
-        for (var i = 0; i < levelData.WaypointPositions.Count; i++)
+        foreach (var pos in levelData.WaypointPositions)
         {
-            var waypoint = Instantiate(_waypointPrefab).transform;
-            waypoint.position = levelData.WaypointPositions[i];
-            waypoint.SetParent(parent.transform);
-            if (i == 0)
+            var waypoint = Instantiate(_waypointPrefab);
+            waypoint.transform.position = pos;
+            waypoint.transform.SetParent(parent.transform);
+            if (previousWaypoint == null)
             {
-                _firstWaypoint = waypoint.position;
+                _firstWaypoint = waypoint;
+            } else
+            {
+                previousWaypoint.GetComponent<Waypoint>().NextWaypoint = waypoint;
             }
+            previousWaypoint = waypoint;
         }
     }
 
