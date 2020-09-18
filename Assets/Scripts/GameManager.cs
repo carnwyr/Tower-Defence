@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject _viewControllerPrefab;
+    [SerializeField]
+    private GameObject _objectPoolerPrefab;
 
     private GameplayController _gameplayController;
 
@@ -31,8 +33,9 @@ public class GameManager : MonoBehaviour
     {
         var assetLoader = new AddressableAssetLoader<LevelData>();
         var levelSetter = new LevelSetter(assetLoader);
-        _gameplayController = new GameplayController(levelSetter);
+        var objectPooler = Instantiate(_objectPoolerPrefab).GetComponent<ObjectPooler>();
+        _gameplayController = new GameplayController(levelSetter, objectPooler);
 
-        viewController.SetCallbacks(levelSetter);
+        viewController.SetCallbacks(levelSetter, _gameplayController);
     }
 }
