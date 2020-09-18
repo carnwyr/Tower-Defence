@@ -14,14 +14,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        var viewController = Instantiate(_viewControllerPrefab).GetComponent<ViewController>();
+        var levelViewController = Instantiate(_viewControllerPrefab).GetComponent<LevelViewController>();
+        var enemyViewController = new GameObject("EnemyVewController", typeof(EnemyViewController)).GetComponent<EnemyViewController>();
 
-        SetDependencies(viewController);
+        SetDependencies(levelViewController, enemyViewController);
     }
     void Start()
     {
         _gameplayController.Start();
-
     }
 
     private void Update()
@@ -29,13 +29,14 @@ public class GameManager : MonoBehaviour
         _gameplayController.Update();
     }
 
-    private void SetDependencies(ViewController viewController)
+    private void SetDependencies(LevelViewController levelViewController, EnemyViewController enemyViewController)
     {
         var assetLoader = new AddressableAssetLoader<LevelData>();
         var levelSetter = new LevelSetter(assetLoader);
         var objectPooler = Instantiate(_objectPoolerPrefab).GetComponent<ObjectPooler>();
         _gameplayController = new GameplayController(levelSetter, objectPooler);
 
-        viewController.SetCallbacks(levelSetter, _gameplayController);
+        levelViewController.SetCallbacks(levelSetter);
+        enemyViewController.SetCallbacks(levelSetter, _gameplayController);
     }
 }

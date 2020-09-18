@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameplayController
 {
-    public Action<int, IObjectPooler> NewWave;
+    public Action<List<GameObject>> NewWave;
 
     private readonly ILevelSetter _levelsetter;
     private readonly IObjectPooler _enemyPooler;
@@ -13,10 +13,12 @@ public class GameplayController
     private readonly float _timeBetweenWaves = 10;
     private readonly int _enemyVariation = 3;
 
+    private List<Vector2> _waypoints;
+
     private float _timer = 0.0f;
     private int _waveCount = 0;
     private bool _gameStarted = false;
-    private GameObject firstWaypoint;
+    private int _health = 100;
 
     public GameplayController(ILevelSetter levelsetter, IObjectPooler objectPooler)
     {
@@ -26,7 +28,7 @@ public class GameplayController
 
     public void Start()
     {
-        _levelsetter.DataLoaded += StartGame;
+        _levelsetter.DataLoaded += PrepareGame;
         _levelsetter.SetUpLevel(1);
     }
 
@@ -45,11 +47,18 @@ public class GameplayController
         }
     }
 
-    private void StartGame(LevelData levelData)
+    private void PrepareGame(LevelData levelData)
     {
-        _levelsetter.DataLoaded -= StartGame;
+        _levelsetter.DataLoaded -= PrepareGame;
+        _waypoints = levelData.WaypointPositions;
+        StartGame();
+    }
+
+    private void StartGame()
+    {
         _waveCount = 0;
         _timer = 0.0f;
+        _health = 100;
         StartNewWave();
         _gameStarted = true;
     }
@@ -58,6 +67,11 @@ public class GameplayController
     {
         _waveCount++;
         var enemyCount = UnityEngine.Random.Range(_waveCount, _waveCount + _enemyVariation);
-        NewWave?.Invoke(enemyCount, _enemyPooler);
+        var enemies = _enemyPooler.GetSeveral("Enemy", enemyCount);
+        foreach (var enemy in enemies)
+        {
+            enemy.GetComponent<Enemy>().Waypoints = _waypoints;
+        }
+        NewWave?.Invoke(enemies);
     }
 }

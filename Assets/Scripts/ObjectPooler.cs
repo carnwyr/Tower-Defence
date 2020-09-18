@@ -50,6 +50,37 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
         }
         return null;
     }
+    public List<GameObject> GetSeveral(string tag, int number)
+    {
+        List<GameObject> objects = new List<GameObject>();
+
+        for (int i = 0; i < pooledObjects.Count; i++)
+        {
+            if (!pooledObjects[i].activeInHierarchy && pooledObjects[i].CompareTag(tag))
+            {
+                objects.Add(pooledObjects[i]);
+                if (objects.Count == number)
+                {
+                    return objects;
+                }
+            }
+        }
+
+        foreach (ObjectPoolItem item in itemsToPool)
+        {
+            if (item.ObjectToPool.CompareTag(tag))
+            {
+                for (int i = 0; i < number - objects.Count; i++)
+                {
+                    GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
+                    obj.SetActive(false);
+                    pooledObjects.Add(obj);
+                    objects.Add(obj);
+                }
+            }
+        }
+        return objects;
+    }
 
     public void HideAll()
     {

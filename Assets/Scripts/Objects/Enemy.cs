@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public GameObject NextWaypoint { get; set; }
+    public List<Vector2> Waypoints { get; set; }
 
+    private int _currentWaypoint = 0;
     private float _speed = 3f;
     private bool _isMoving = false;
 
@@ -16,21 +17,12 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
-        if(_isMoving && NextWaypoint != null)
+        if(_isMoving && _currentWaypoint < Waypoints.Count)
         {
-            transform.position = Vector2.MoveTowards(transform.position, NextWaypoint.transform.position, Time.deltaTime * _speed);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collider)
-    {
-        if (collider.CompareTag("Waypoint") && _isMoving)
-        {
-            if (transform.position == NextWaypoint.transform.position)
+            transform.position = Vector2.MoveTowards(transform.position, Waypoints[_currentWaypoint], Time.deltaTime * _speed);
+            if (transform.position == new Vector3(Waypoints[_currentWaypoint].x, Waypoints[_currentWaypoint].y, 0))
             {
-                var nextWaypoint = collider.GetComponent<Waypoint>().NextWaypoint;
-                NextWaypoint = nextWaypoint;
-                if (nextWaypoint == null)
+                if(++_currentWaypoint >= Waypoints.Count)
                 {
                     _isMoving = false;
                 }
