@@ -51,3 +51,7 @@ MonoBehaviour:
     type: 3}
   _backgroundPrefab: {fileID: 3852900157677042633, guid: 8767a3e33a8bfcf429de68d6ed1ac56f,
     type: 3}
+  _towerPrefab: {fileID: 3336982090312655454, guid: 146071e16d4820e4fb1ab2b71ac1de4e,
+    type: 3}
+  _waypointPrefab: {fileID: 7586756771872223605, guid: 78b91031eecd6814cbfa03a2149b9884,
+    type: 3}

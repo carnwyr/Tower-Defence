@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         _gameplayController.Start();
+
     }
 
     private void Update()
@@ -31,6 +33,6 @@ public class GameManager : MonoBehaviour
         var levelSetter = new LevelSetter(assetLoader);
         _gameplayController = new GameplayController(levelSetter);
 
-        viewController.SetDependencies(levelSetter);
+        viewController.SetCallbacks(levelSetter);
     }
 }

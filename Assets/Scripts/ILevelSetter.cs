@@ -1,8 +1,8 @@
-﻿public delegate void ProcessData(LevelData data);
+﻿using System;
 
 public interface ILevelSetter
 {
-    event ProcessData DataLoaded;
+    event Action<LevelData> DataLoaded;
 
     void SetUpLevel(int levelNumber);
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ViewController : MonoBehaviour
@@ -11,12 +12,15 @@ public class ViewController : MonoBehaviour
     private GameObject _eventSystemPrefab;
     [SerializeField]
     private GameObject _backgroundPrefab;
+    [SerializeField]
+    private GameObject _towerPrefab;
+    [SerializeField]
+    private GameObject _waypointPrefab;
 
+    private Action _unsubscribe;
     private Image _background;
 
-    private ILevelSetter _levelSetter;
-
-    public void Awake()
+    private void Awake()
     {
         Instantiate(_eventSystemPrefab);
         var camera = Instantiate(_cameraPrefab);
@@ -28,15 +32,28 @@ public class ViewController : MonoBehaviour
         _background = background.GetComponent<Image>();
     }
 
-    public void SetDependencies(ILevelSetter levelSetter)
+    private void OnDestroy()
     {
-        _levelSetter = levelSetter;
-        setCallbacks();
+        _unsubscribe();
     }
 
-    private void setCallbacks()
+    public void SetCallbacks(ILevelSetter levelSetter)
     {
-        _levelSetter.DataLoaded += SetBackground;
+        levelSetter.DataLoaded += SetBackground;
+        levelSetter.DataLoaded += SetTowers; 
+        levelSetter.DataLoaded += SetWaypoints;
+
+        _unsubscribe = () => RemoveCallbacks(levelSetter);
+    }
+
+    private void RemoveCallbacks(ILevelSetter levelSetter)
+    {
+        if (levelSetter != null)
+        {
+            levelSetter.DataLoaded -= SetBackground;
+            levelSetter.DataLoaded -= SetTowers;
+            levelSetter.DataLoaded -= SetWaypoints;
+        }
     }
 
     private void SetBackground(LevelData levelData)
@@ -45,5 +62,29 @@ public class ViewController : MonoBehaviour
         _background.sprite = sprite;
         _background.preserveAspect = true;
         _background.gameObject.GetComponent<AspectRatioFitter>().aspectRatio = sprite.bounds.size.x / sprite.bounds.size.y;
+    }
+
+    private void SetTowers(LevelData levelData)
+    {
+        var parent =new GameObject("Towers");
+        
+        foreach(var pos in levelData.TowerPositions)
+        {
+            var tower = Instantiate(_towerPrefab).transform;
+            tower.transform.position = pos;
+            tower.transform.SetParent(parent.transform);
+        }
+    }
+
+    private void SetWaypoints(LevelData levelData)
+    {
+        var parent = new GameObject("Waypoints");
+
+        foreach (var pos in levelData.WaypointPositions)
+        {
+            var waypoint = Instantiate(_waypointPrefab).transform;
+            waypoint.transform.position = pos;
+            waypoint.transform.SetParent(parent.transform);
+        }
     }
 }

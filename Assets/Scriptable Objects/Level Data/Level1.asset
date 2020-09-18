@@ -16,8 +16,8 @@ MonoBehaviour:
   background: {fileID: 21300000, guid: 03920aa76f76c5643a8e3846569f9573, type: 3}
   towerPositions:
   - {x: -3.25, y: 3}
-  - {x: 0.9, y: -1.75}
-  - {x: 2.75, y: 2.8}
+  - {x: 0.9, y: -1.6}
+  - {x: 2.75, y: 1.8}
   spawnPosition: {x: -5, y: 5.5}
   waypointPositions:
   - {x: -5, y: -0.5}

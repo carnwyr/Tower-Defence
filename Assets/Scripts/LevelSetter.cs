@@ -1,17 +1,22 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
-using UnityEngine.UI;
 
 public class LevelSetter : ILevelSetter
 {
     private readonly IAssetLoader<LevelData> _levelLoader;
 
-    public event ProcessData DataLoaded;
+    public event Action<LevelData> DataLoaded;
 
     public LevelSetter(IAssetLoader<LevelData> levelLoader)
     {
         _levelLoader = levelLoader;
+    }
+
+    ~LevelSetter()
+    {
+        if (DataLoaded != null)
+            foreach (var d in DataLoaded.GetInvocationList())
+                DataLoaded -= (d as Action<LevelData>);
     }
 
     public void SetUpLevel(int levelNumber)
@@ -22,9 +27,14 @@ public class LevelSetter : ILevelSetter
 
     protected void OnDataLoaded(AsyncOperationHandle<LevelData> handle)
     {
+        handle.Completed -= OnDataLoaded;
+
         if (handle.Status == AsyncOperationStatus.Succeeded)
         {
-            DataLoaded(handle.Result);
+            DataLoaded?.Invoke(handle.Result);
+        } else
+        {
+            UnityEngine.Debug.LogError("Can't load asset " + handle.DebugName + " " + handle.OperationException.ToString());
         }
     }
 }
