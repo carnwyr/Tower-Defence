@@ -5,31 +5,22 @@ using UnityEngine;
 
 public class GameplayController
 {
-    public Action<List<GameObject>> NewWave;
+    private readonly ILevelSetter _levelSetter;
+    private readonly IEnemyController _enemyController;
 
-    private readonly ILevelSetter _levelsetter;
-    private readonly IObjectPooler _enemyPooler;
-
-    private readonly float _timeBetweenWaves = 10;
-    private readonly int _enemyVariation = 3;
-
-    private List<Vector2> _waypoints;
-
-    private float _timer = 0.0f;
-    private int _waveCount = 0;
     private bool _gameStarted = false;
     private int _health = 100;
 
-    public GameplayController(ILevelSetter levelsetter, IObjectPooler objectPooler)
+    public GameplayController(ILevelSetter levelSetter, IEnemyController enemyController)
     {
-        _levelsetter = levelsetter;
-        _enemyPooler = objectPooler;
+        _levelSetter = levelSetter;
+        _enemyController = enemyController;
     }
 
     public void Start()
     {
-        _levelsetter.DataLoaded += PrepareGame;
-        _levelsetter.SetUpLevel(1);
+        _levelSetter.DataLoaded += StartGame;
+        _levelSetter.SetUpLevel(1);
     }
 
     public void Update()
@@ -39,39 +30,14 @@ public class GameplayController
             return;
         }
 
-        _timer += Time.deltaTime;
-        if (_timer > _timeBetweenWaves)
-        {
-            _timer -= _timeBetweenWaves;
-            StartNewWave();
-        }
+        _enemyController.Update();
     }
 
-    private void PrepareGame(LevelData levelData)
+    private void StartGame(LevelData levelData)
     {
-        _levelsetter.DataLoaded -= PrepareGame;
-        _waypoints = levelData.WaypointPositions;
-        StartGame();
-    }
-
-    private void StartGame()
-    {
-        _waveCount = 0;
-        _timer = 0.0f;
+        _levelSetter.DataLoaded -= StartGame;
         _health = 100;
-        StartNewWave();
+        _enemyController.BeginAttack();
         _gameStarted = true;
-    }
-
-    private void StartNewWave()
-    {
-        _waveCount++;
-        var enemyCount = UnityEngine.Random.Range(_waveCount, _waveCount + _enemyVariation);
-        var enemies = _enemyPooler.GetSeveral("Enemy", enemyCount);
-        foreach (var enemy in enemies)
-        {
-            enemy.GetComponent<Enemy>().Waypoints = _waypoints;
-        }
-        NewWave?.Invoke(enemies);
     }
 }

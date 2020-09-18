@@ -13,24 +13,24 @@ public class EnemyViewController : MonoBehaviour
         _unsubscribe();
     }
 
-    public void SetCallbacks(ILevelSetter levelSetter, GameplayController gameplayController)
+    public void SetCallbacks(ILevelSetter levelSetter, IEnemyController enemyController)
     {
         levelSetter.DataLoaded += SetSpawnPosition;
 
-        gameplayController.NewWave += SpawnWave;
+        enemyController.NewWave += SpawnWave;
 
-        _unsubscribe = () => RemoveCallbacks(levelSetter, gameplayController);
+        _unsubscribe = () => RemoveCallbacks(levelSetter, enemyController);
     }
 
-    private void RemoveCallbacks(ILevelSetter levelSetter, GameplayController gameplayController)
+    private void RemoveCallbacks(ILevelSetter levelSetter, IEnemyController enemyController)
     {
         if (levelSetter != null)
         {
             levelSetter.DataLoaded -= SetSpawnPosition;
         }
-        if (gameplayController != null)
+        if (enemyController != null)
         {
-            gameplayController.NewWave -= SpawnWave;
+            enemyController.NewWave -= SpawnWave;
         }
     }
 

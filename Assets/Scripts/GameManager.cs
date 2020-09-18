@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -34,9 +31,10 @@ public class GameManager : MonoBehaviour
         var assetLoader = new AddressableAssetLoader<LevelData>();
         var levelSetter = new LevelSetter(assetLoader);
         var objectPooler = Instantiate(_objectPoolerPrefab).GetComponent<ObjectPooler>();
-        _gameplayController = new GameplayController(levelSetter, objectPooler);
+        var enemyController = new EnemyController(levelSetter, objectPooler);
+        _gameplayController = new GameplayController(levelSetter, enemyController);
 
         levelViewController.SetCallbacks(levelSetter);
-        enemyViewController.SetCallbacks(levelSetter, _gameplayController);
+        enemyViewController.SetCallbacks(levelSetter, enemyController);
     }
 }

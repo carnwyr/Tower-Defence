@@ -65,12 +65,12 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
                 }
             }
         }
-
         foreach (ObjectPoolItem item in itemsToPool)
         {
             if (item.ObjectToPool.CompareTag(tag))
             {
-                for (int i = 0; i < number - objects.Count; i++)
+                var missingObjects = number - objects.Count;
+                for (int i = 0; i < missingObjects; i++)
                 {
                     GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
                     obj.SetActive(false);
