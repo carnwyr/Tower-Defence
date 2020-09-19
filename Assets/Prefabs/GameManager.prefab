@@ -49,5 +49,7 @@ MonoBehaviour:
     type: 3}
   _healthViewControllerPrefab: {fileID: 2005228063755054491, guid: 407f8cf84234c914b99b5cea20123066,
     type: 3}
+  _goldViewControllerPrefab: {fileID: 5440833366532538493, guid: 2e3e2d3a8b72abe49aaecb0155e1a510,
+    type: 3}
   _objectPoolerPrefab: {fileID: 7027537965236772528, guid: 475cb23aebeae7a4a99fd2098dc18fc3,
     type: 3}

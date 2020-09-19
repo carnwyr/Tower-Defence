@@ -6,12 +6,14 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public event Action<int> DealDamage;
+    public event Action<int> EnemyDied;
 
     public List<Vector2> Waypoints { get; set; }
 
     private float _attackCooldown = 2f;
     private int _damage = 5;
     private int _health = 10;
+    private int _gold = 10;
 
     private int _currentWaypoint = 0;
     private float _speed = 3f;
@@ -60,6 +62,7 @@ public class Enemy : MonoBehaviour
         _health -= damage;
         if (_health <= 0)
         {
+            EnemyDied?.Invoke(_gold);
             gameObject.SetActive(false);
         }
     }
