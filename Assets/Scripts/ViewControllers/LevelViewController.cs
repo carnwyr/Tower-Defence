@@ -9,7 +9,6 @@ public class LevelViewController : MonoBehaviour
     [SerializeField]
     private GameObject _towerPrefab;
 
-    private GameObject _canvas;
     private Image _background;
     private Action _unsubscribe;
 
@@ -20,10 +19,8 @@ public class LevelViewController : MonoBehaviour
 
     public void Init(GameObject canvas)
     {
-        _canvas = canvas;
-
         var background = Instantiate(_backgroundPrefab);
-        background.transform.SetParent(_canvas.transform, false);
+        background.transform.SetParent(canvas.transform, false);
 
         _background = background.GetComponent<Image>();
     }

@@ -10,6 +10,7 @@ public class HealthController : IHealthController
     public void ResetHealth()
     {
         _health = 100;
+        HealthChanged?.Invoke(_health);
     }
 
     public void ReduceHealth(int damage)

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2387660707106093058
+--- !u!1 &2005228063755054491
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,40 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2387660707106093116}
-  - component: {fileID: 2387660707106093059}
+  - component: {fileID: 4639003033264117844}
+  - component: {fileID: 2181829976443368427}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: HealthViewController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2387660707106093116
+--- !u!4 &4639003033264117844
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2387660707106093058}
+  m_GameObject: {fileID: 2005228063755054491}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.37365043, y: -0.08882011, z: -587.5137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2387660707106093059
+--- !u!114 &2181829976443368427
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2387660707106093058}
+  m_GameObject: {fileID: 2005228063755054491}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abb31f56538abaa49b0d40df2e71d8a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 61a408947c7b40a46b1ed4481f453a26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _viewControllerPrefab: {fileID: 6908607506499102419, guid: 190119694552aa34dbccfbf0179fa0c4,
-    type: 3}
-  _levelViewControllerPrefab: {fileID: 7991783669413648535, guid: ad3dc81c35424ec45b155cbcf1af81a6,
-    type: 3}
-  _healthViewControllerPrefab: {fileID: 2005228063755054491, guid: 407f8cf84234c914b99b5cea20123066,
-    type: 3}
-  _objectPoolerPrefab: {fileID: 7027537965236772528, guid: 475cb23aebeae7a4a99fd2098dc18fc3,
+  _healthPrefab: {fileID: 6364140937709891053, guid: cdda3555f4b669e4fa5f54aa9a04f6d6,
     type: 3}

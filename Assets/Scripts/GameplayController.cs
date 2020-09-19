@@ -7,14 +7,15 @@ public class GameplayController
 {
     private readonly ILevelSetter _levelSetter;
     private readonly IEnemyController _enemyController;
+    private readonly IHealthController _healthController;
 
     private bool _gameStarted = false;
-    private int _health = 100;
 
-    public GameplayController(ILevelSetter levelSetter, IEnemyController enemyController)
+    public GameplayController(ILevelSetter levelSetter, IEnemyController enemyController, IHealthController healthController)
     {
         _levelSetter = levelSetter;
         _enemyController = enemyController;
+        _healthController = healthController;
     }
 
     public void Start()
@@ -36,7 +37,7 @@ public class GameplayController
     private void StartGame(LevelData levelData)
     {
         _levelSetter.DataLoaded -= StartGame;
-        _health = 100;
+        _healthController.ResetHealth();
         _enemyController.BeginAttack();
         _gameStarted = true;
     }
