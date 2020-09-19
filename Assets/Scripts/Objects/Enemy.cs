@@ -11,14 +11,17 @@ public class Enemy : MonoBehaviour
 
     private float _attackCooldown = 2f;
     private int _damage = 5;
+    private int _health = 10;
 
     private int _currentWaypoint = 0;
-    private float _speed = 4f;
+    private float _speed = 3f;
     private bool _isMoving = false;
 
     private void OnEnable()
     {
+        _currentWaypoint = 0;
         _isMoving = true;
+        _health = 10;
     }
 
     private void OnDisable()
@@ -49,6 +52,15 @@ public class Enemy : MonoBehaviour
         {
             DealDamage?.Invoke(_damage);
             yield return new WaitForSeconds(_attackCooldown);
+        }
+    }
+
+    public void GetAttacked(int damage)
+    {
+        _health -= damage;
+        if (_health <= 0)
+        {
+            gameObject.SetActive(false);
         }
     }
 }
