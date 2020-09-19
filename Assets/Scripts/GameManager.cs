@@ -5,13 +5,17 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject _viewControllerPrefab;
     [SerializeField]
+    private GameObject _levelViewControllerPrefab;
+    [SerializeField]
     private GameObject _objectPoolerPrefab;
 
     private GameplayController _gameplayController;
 
     private void Awake()
     {
-        var levelViewController = Instantiate(_viewControllerPrefab).GetComponent<LevelViewController>();
+        var viewController = Instantiate(_viewControllerPrefab).GetComponent<ViewController>();
+        var levelViewController = Instantiate(_levelViewControllerPrefab).GetComponent<LevelViewController>();
+        levelViewController.Init(viewController.Canvas);
         var enemyViewController = new GameObject("EnemyVewController", typeof(EnemyViewController)).GetComponent<EnemyViewController>();
 
         SetDependencies(levelViewController, enemyViewController);

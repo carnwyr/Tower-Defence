@@ -5,34 +5,27 @@ using UnityEngine.UI;
 public class LevelViewController : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _cameraPrefab;
-    [SerializeField]
-    private GameObject _canvasPrefab;
-    [SerializeField]
-    private GameObject _eventSystemPrefab;
-    [SerializeField]
     private GameObject _backgroundPrefab;
     [SerializeField]
     private GameObject _towerPrefab;
 
-    private Action _unsubscribe;
+    private GameObject _canvas;
     private Image _background;
-
-    private void Awake()
-    {
-        Instantiate(_eventSystemPrefab);
-        var camera = Instantiate(_cameraPrefab);
-        var canvas = Instantiate(_canvasPrefab);
-        var background = Instantiate(_backgroundPrefab);
-        canvas.GetComponent<Canvas>().worldCamera = camera.GetComponent<Camera>();
-        background.transform.SetParent(canvas.transform, false);
-        
-        _background = background.GetComponent<Image>();
-    }
+    private Action _unsubscribe;
 
     private void OnDestroy()
     {
         _unsubscribe();
+    }
+
+    public void Init(GameObject canvas)
+    {
+        _canvas = canvas;
+
+        var background = Instantiate(_backgroundPrefab);
+        background.transform.SetParent(_canvas.transform, false);
+
+        _background = background.GetComponent<Image>();
     }
 
     public void SetCallbacks(ILevelSetter levelSetter)
