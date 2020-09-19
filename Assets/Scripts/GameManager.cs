@@ -39,8 +39,9 @@ public class GameManager : MonoBehaviour
         var assetLoader = new AddressableAssetLoader<LevelData>();
         var levelSetter = new LevelSetter(assetLoader);
         var objectPooler = Instantiate(_objectPoolerPrefab).GetComponent<ObjectPooler>();
+        var healthController = new HealthController(objectPooler);
+        objectPooler.Init();
         var enemyController = new EnemyController(levelSetter, objectPooler);
-        var healthController = new HealthController();
         _gameplayController = new GameplayController(levelSetter, enemyController, healthController);
 
         levelViewController.SetCallbacks(levelSetter);

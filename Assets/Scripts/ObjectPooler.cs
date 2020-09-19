@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 [System.Serializable]
 public class ObjectPoolItem
@@ -10,11 +12,13 @@ public class ObjectPoolItem
 
 public class ObjectPooler : MonoBehaviour, IObjectPooler
 {
+    public event Action<GameObject> NewObjectCreated;
+
     public List<ObjectPoolItem> itemsToPool;
 
     private List<GameObject> pooledObjects;
 
-    public void Awake()
+    public void Init()
     {
         pooledObjects = new List<GameObject>();
         foreach (ObjectPoolItem item in itemsToPool)
@@ -24,6 +28,7 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
                 GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
                 obj.SetActive(false);
                 pooledObjects.Add(obj);
+                NewObjectCreated?.Invoke(obj);
             }
         }
     }
@@ -45,6 +50,7 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
                 GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
                 obj.SetActive(false);
                 pooledObjects.Add(obj);
+                NewObjectCreated?.Invoke(obj);
                 return obj;
             }
         }
@@ -76,6 +82,7 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
                     obj.SetActive(false);
                     pooledObjects.Add(obj);
                     objects.Add(obj);
+                    NewObjectCreated?.Invoke(obj);
                 }
             }
         }
@@ -91,5 +98,10 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
                 obj.SetActive(false);
             }
         }
+    }
+
+    public List<GameObject> GetFullList(string tag)
+    {
+        return pooledObjects.Where(x => x.CompareTag(tag)).ToList();
     }
 }
