@@ -21,8 +21,9 @@ public class GameManager : MonoBehaviour
         var healthViewController = Instantiate(_healthViewControllerPrefab).GetComponent<HealthViewController>();
         healthViewController.Init(viewController.Canvas);
         var enemyViewController = new GameObject("EnemyVewController", typeof(EnemyViewController)).GetComponent<EnemyViewController>();
+        var towerViewController = new GameObject("TowerVewController", typeof(TowerViewController)).GetComponent<TowerViewController>();
 
-        SetDependencies(levelViewController, enemyViewController, healthViewController);
+        SetDependencies(levelViewController, enemyViewController, healthViewController, towerViewController);
     }
     void Start()
     {
@@ -34,18 +35,20 @@ public class GameManager : MonoBehaviour
         _gameplayController.Update();
     }
 
-    private void SetDependencies(LevelViewController levelViewController, EnemyViewController enemyViewController, HealthViewController healthViewController)
+    private void SetDependencies(LevelViewController levelViewController, EnemyViewController enemyViewController, HealthViewController healthViewController, TowerViewController towerViewController)
     {
         var assetLoader = new AddressableAssetLoader<LevelData>();
         var levelSetter = new LevelSetter(assetLoader);
         var objectPooler = Instantiate(_objectPoolerPrefab).GetComponent<ObjectPooler>();
         var healthController = new HealthController(objectPooler);
         objectPooler.Init();
-        var enemyController = new EnemyController(levelSetter, objectPooler);
-        _gameplayController = new GameplayController(levelSetter, enemyController, healthController);
+        var enemyController = new EnemyController(objectPooler);
+        var towerController = new TowerController(objectPooler);
+        _gameplayController = new GameplayController(levelSetter, enemyController, healthController, towerController);
 
         levelViewController.SetCallbacks(levelSetter);
         enemyViewController.SetCallbacks(levelSetter, enemyController);
         healthViewController.SetCallbacks(healthController);
+        towerViewController.SetCallbacks(towerController);
     }
 }

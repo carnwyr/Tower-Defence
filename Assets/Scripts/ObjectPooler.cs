@@ -23,9 +23,11 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
         pooledObjects = new List<GameObject>();
         foreach (ObjectPoolItem item in itemsToPool)
         {
+            var parent = new GameObject(item.ObjectToPool.tag + "s");
             for (int i = 0; i < item.AmountToPool; i++)
             {
                 GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
+                obj.transform.SetParent(parent.transform);
                 obj.SetActive(false);
                 pooledObjects.Add(obj);
                 NewObjectCreated?.Invoke(obj);

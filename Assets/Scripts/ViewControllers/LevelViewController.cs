@@ -28,7 +28,6 @@ public class LevelViewController : MonoBehaviour
     public void SetCallbacks(ILevelSetter levelSetter)
     {
         levelSetter.DataLoaded += SetBackground;
-        levelSetter.DataLoaded += SetTowers;
 
         _unsubscribe = () => RemoveCallbacks(levelSetter);
     }
@@ -38,7 +37,6 @@ public class LevelViewController : MonoBehaviour
         if (levelSetter != null)
         {
             levelSetter.DataLoaded -= SetBackground;
-            levelSetter.DataLoaded -= SetTowers;
         }
     }
 
@@ -48,17 +46,5 @@ public class LevelViewController : MonoBehaviour
         _background.sprite = sprite;
         _background.preserveAspect = true;
         _background.gameObject.GetComponent<AspectRatioFitter>().aspectRatio = sprite.bounds.size.x / sprite.bounds.size.y;
-    }
-
-    private void SetTowers(LevelData levelData)
-    {
-        var parent =new GameObject("Towers");
-        
-        foreach(var pos in levelData.TowerPositions)
-        {
-            var tower = Instantiate(_towerPrefab).transform;
-            tower.position = pos;
-            tower.SetParent(parent.transform);
-        }
     }
 }

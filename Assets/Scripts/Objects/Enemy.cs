@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
         if (_isMoving && _currentWaypoint < Waypoints.Count)
         {
             transform.position = Vector2.MoveTowards(transform.position, Waypoints[_currentWaypoint], Time.deltaTime * _speed);
-            if (transform.position == new Vector3(Waypoints[_currentWaypoint].x, Waypoints[_currentWaypoint].y, 0))
+            if (transform.position == new Vector3(Waypoints[_currentWaypoint].x, Waypoints[_currentWaypoint].y, transform.position.z))
             {
                 if(++_currentWaypoint >= Waypoints.Count)
                 {

@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyController : IEnemyController
 {
     public event Action<List<GameObject>> NewWave;
-    private Action _unsubscribe;
 
     private readonly IObjectPooler _enemyPooler;
 
@@ -17,30 +16,14 @@ public class EnemyController : IEnemyController
     private int _waveCount = 0;
     private float _timer = 0.0f;
 
-    public EnemyController(ILevelSetter levelSetter, IObjectPooler objectPooler)
+    public EnemyController(IObjectPooler objectPooler)
     {
         _enemyPooler = objectPooler;
-        levelSetter.DataLoaded += GetWaypoints;
-
-        _unsubscribe = () => RemoveCallbacks(levelSetter);
     }
 
-    ~EnemyController()
+    public void SetWaypoints(List<Vector2> waypoints)
     {
-        _unsubscribe();
-    }
-
-    public void GetWaypoints(LevelData levelData)
-    {
-        _waypoints = levelData.WaypointPositions;
-    }
-
-    private void RemoveCallbacks(ILevelSetter levelSetter)
-    {
-        if (levelSetter != null)
-        {
-            levelSetter.DataLoaded -= GetWaypoints;
-        }
+        _waypoints = waypoints;
     }
 
     public void BeginAttack()

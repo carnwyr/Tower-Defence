@@ -1,15 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
+    public event Action<GameObject, GameObject> ShootBullet;
+
     private int _damage = 5;
     private float _attackCooldown = 2f;
 
     private List<GameObject> _accessibleEnemies = new List<GameObject>();
 
-    private void Awake()
+    private void OnEnable()
     {
         StartCoroutine(Attack());
     }
@@ -36,12 +39,17 @@ public class Tower : MonoBehaviour
         {
             if (_accessibleEnemies.Count > 0)
             {
-                _accessibleEnemies[0].GetComponent<Enemy>().GetAttacked(_damage);
+                ShootBullet?.Invoke(gameObject, _accessibleEnemies[0]);
                 yield return new WaitForSeconds(_attackCooldown);
             } else
             {
                 yield return null;
             }
         }
+    }
+
+    public int GetDamage()
+    {
+        return _damage;
     }
 }
