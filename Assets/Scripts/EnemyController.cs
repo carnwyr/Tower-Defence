@@ -38,6 +38,11 @@ public class EnemyController : IEnemyController
         _unsubscribe = () => RemoveCallbacks();
     }
 
+    ~EnemyController()
+    {
+        _unsubscribe();
+    }
+
     private void SubscribeToNewEnemies(GameObject pooledObj)
     {
         if (!pooledObj.CompareTag("Enemy"))

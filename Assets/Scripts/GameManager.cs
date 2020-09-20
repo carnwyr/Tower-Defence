@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
         _gameplayController = new GameplayController(levelSetter, enemyController, healthController, goldController, towerController, objectPooler);
 
         levelViewController.SetCallbacks(levelSetter);
-        enemyViewController.SetCallbacks(levelSetter, enemyController);
+        enemyViewController.SetCallbacks(levelSetter, enemyController, _gameplayController);
         healthViewController.SetCallbacks(healthController);
         goldViewController.SetCallbacks(goldController);
         gameOverViewController.SetCallbacks(_gameplayController);
