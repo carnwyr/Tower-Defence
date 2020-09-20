@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     private GameObject _objectPoolerPrefab;
 
     private GameplayController _gameplayController;
+    private IInputController _inputController;
 
     private void Awake()
     {
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        _inputController.Update();
         _gameplayController.Update();
     }
 
@@ -51,9 +53,14 @@ public class GameManager : MonoBehaviour
         var healthController = new HealthController(objectPooler);
         var goldController = new GoldController(objectPooler);
         var enemyController = new EnemyController(objectPooler);
+        var towerController = new TowerController(objectPooler, goldController);
         objectPooler.Init();
-        var towerController = new TowerController(objectPooler);
         _gameplayController = new GameplayController(levelSetter, enemyController, healthController, goldController, towerController, objectPooler);
+        #if UNITY_ANDROID
+            _inputController = new TouchInputController();
+        #else
+            _inputController = new MouseInputController();
+        #endif
 
         levelViewController.SetCallbacks(levelSetter);
         enemyViewController.SetCallbacks(levelSetter, enemyController, _gameplayController);

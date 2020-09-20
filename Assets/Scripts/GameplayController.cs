@@ -58,6 +58,7 @@ public class GameplayController
 
     public void StartGame()
     {
+        _towerController.ResetTowers();
         _healthController.ResetHealth();
         _goldController.ResetGold();
         _enemyController.BeginAttack();
