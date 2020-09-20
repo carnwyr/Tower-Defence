@@ -58,7 +58,6 @@ public class GameplayController
 
     public void StartGame()
     {
-        UnityEngine.Debug.Log("started");
         _healthController.ResetHealth();
         _goldController.ResetGold();
         _enemyController.BeginAttack();

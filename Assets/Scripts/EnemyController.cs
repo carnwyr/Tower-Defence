@@ -6,6 +6,8 @@ public class EnemyController : IEnemyController
 {
     public event Action<List<GameObject>> NewWave;
 
+    private Action _unsubscribe;
+
     private readonly IObjectPooler _enemyPooler;
 
     private readonly float _timeBetweenWaves = 10;
@@ -20,6 +22,35 @@ public class EnemyController : IEnemyController
     public EnemyController(IObjectPooler objectPooler)
     {
         _enemyPooler = objectPooler;
+        _enemyPooler.NewObjectCreated += SubscribeToNewEnemies;
+
+        _unsubscribe = () => RemoveCallbacks();
+    }
+
+    private void SubscribeToNewEnemies(GameObject pooledObj)
+    {
+        if (!pooledObj.CompareTag("Enemy"))
+        {
+            return;
+        }
+        var enemy = pooledObj.GetComponent<Enemy>();
+        enemy.EnemyDied += IncreaseEnemyCount;
+    }
+
+    private void RemoveCallbacks()
+    {
+        _enemyPooler.NewObjectCreated -= SubscribeToNewEnemies;
+
+        var enemies = _enemyPooler.GetFullList("Enemy");
+        foreach (var enemy in enemies)
+        {
+            enemy.GetComponent<Enemy>().EnemyDied -= IncreaseEnemyCount;
+        }
+    }
+
+    private void IncreaseEnemyCount(int gold)
+    {
+        _enemiesKilled++;
     }
 
     public void SetWaypoints(List<Vector2> waypoints)
