@@ -10,20 +10,19 @@ public class Enemy : MonoBehaviour
 
     public List<Vector2> Waypoints { get; set; }
 
-    private float _attackCooldown = 2f;
-    private int _damage = 50;
+    private float _attackCooldown = 1.5f;
+    private int _damage = 5;
     private int _health = 10;
     private int _gold = 10;
 
     private int _currentWaypoint = 0;
-    private float _speed = 6f;
+    private float _speed = 3f;
     private bool _isMoving = false;
 
     private void OnEnable()
     {
         _currentWaypoint = 0;
         _isMoving = true;
-        _health = 10;
     }
 
     private void OnDisable()
@@ -65,5 +64,12 @@ public class Enemy : MonoBehaviour
             EnemyDied?.Invoke(_gold);
             gameObject.SetActive(false);
         }
+    }
+
+    public void SetStats(int damage, int health, int gold)
+    {
+        _damage = damage;
+        _health = health;
+        _gold = gold;
     }
 }
