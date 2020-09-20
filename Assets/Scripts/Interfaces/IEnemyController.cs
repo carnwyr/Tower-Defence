@@ -9,4 +9,5 @@ public interface IEnemyController
     void BeginAttack();
     void Update();
     void SetWaypoints(List<Vector2> waypoints);
+    int GetEnemiesKilled();
 }

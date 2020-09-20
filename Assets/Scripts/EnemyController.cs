@@ -15,6 +15,7 @@ public class EnemyController : IEnemyController
 
     private int _waveCount = 0;
     private float _timer = 0.0f;
+    private int _enemiesKilled = 0;
 
     public EnemyController(IObjectPooler objectPooler)
     {
@@ -30,6 +31,7 @@ public class EnemyController : IEnemyController
     {
         _timer = 0.0f;
         _waveCount = 0;
+        _enemiesKilled = 0;
         CreateNewWave();
     }
 
@@ -53,5 +55,10 @@ public class EnemyController : IEnemyController
             enemy.GetComponent<Enemy>().Waypoints = _waypoints;
         }
         NewWave?.Invoke(enemies);
+    }
+
+    public int GetEnemiesKilled()
+    {
+        return _enemiesKilled;
     }
 }

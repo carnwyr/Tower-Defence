@@ -17,13 +17,15 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
     public List<ObjectPoolItem> itemsToPool;
 
     private List<GameObject> pooledObjects;
+    private Dictionary<string, GameObject> parents = new Dictionary<string, GameObject>();
 
     public void Init()
     {
         pooledObjects = new List<GameObject>();
         foreach (ObjectPoolItem item in itemsToPool)
         {
-            var parent = new GameObject(item.ObjectToPool.tag + "s");
+            var parent = new GameObject(item.ObjectToPool.tag);
+            parents.Add(item.ObjectToPool.tag, parent);
             for (int i = 0; i < item.AmountToPool; i++)
             {
                 GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
@@ -50,6 +52,7 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
             if (item.ObjectToPool.CompareTag(tag))
             {
                 GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
+                obj.transform.SetParent(parents[item.ObjectToPool.tag].transform);
                 obj.SetActive(false);
                 pooledObjects.Add(obj);
                 NewObjectCreated?.Invoke(obj);
@@ -81,6 +84,7 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
                 for (int i = 0; i < missingObjects; i++)
                 {
                     GameObject obj = (GameObject)Instantiate(item.ObjectToPool);
+                    obj.transform.SetParent(parents[item.ObjectToPool.tag].transform);
                     obj.SetActive(false);
                     pooledObjects.Add(obj);
                     objects.Add(obj);
@@ -91,11 +95,11 @@ public class ObjectPooler : MonoBehaviour, IObjectPooler
         return objects;
     }
 
-    public void HideAll()
+    public void HideByTag(string tag)
     {
         foreach (var obj in pooledObjects)
         {
-            if (obj.activeInHierarchy)
+            if (obj.activeInHierarchy && obj.CompareTag(tag))
             {
                 obj.SetActive(false);
             }

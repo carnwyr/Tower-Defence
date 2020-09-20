@@ -8,5 +8,5 @@ public interface IObjectPooler
     GameObject GetPooledObject(string tag);
     List<GameObject> GetSeveral(string tag, int number);
     List<GameObject> GetFullList(string tag);
-    void HideAll();
+    void HideByTag(string tag);
 }

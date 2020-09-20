@@ -51,5 +51,7 @@ MonoBehaviour:
     type: 3}
   _goldViewControllerPrefab: {fileID: 5440833366532538493, guid: 2e3e2d3a8b72abe49aaecb0155e1a510,
     type: 3}
+  _gameOverViewControllerPrefab: {fileID: 7715235726464262508, guid: eedc58dff2be8c34e8a96d5c267f91d1,
+    type: 3}
   _objectPoolerPrefab: {fileID: 7027537965236772528, guid: 475cb23aebeae7a4a99fd2098dc18fc3,
     type: 3}

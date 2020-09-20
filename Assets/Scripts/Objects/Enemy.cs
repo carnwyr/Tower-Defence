@@ -11,12 +11,12 @@ public class Enemy : MonoBehaviour
     public List<Vector2> Waypoints { get; set; }
 
     private float _attackCooldown = 2f;
-    private int _damage = 5;
+    private int _damage = 50;
     private int _health = 10;
     private int _gold = 10;
 
     private int _currentWaypoint = 0;
-    private float _speed = 3f;
+    private float _speed = 6f;
     private bool _isMoving = false;
 
     private void OnEnable()

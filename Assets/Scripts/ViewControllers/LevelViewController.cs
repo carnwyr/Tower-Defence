@@ -6,8 +6,6 @@ public class LevelViewController : MonoBehaviour
 {
     [SerializeField]
     private GameObject _backgroundPrefab;
-    [SerializeField]
-    private GameObject _towerPrefab;
 
     private Image _background;
     private Action _unsubscribe;

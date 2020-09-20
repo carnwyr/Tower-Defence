@@ -1,25 +1,40 @@
-﻿public class GameplayController
+﻿using System;
+using System.Diagnostics;
+
+public class GameplayController
 {
+    public Action GameStarted;
+    public Action<int> GameEnded;
+
     private readonly ILevelSetter _levelSetter;
     private readonly IEnemyController _enemyController;
     private readonly IHealthController _healthController;
     private readonly IGoldController _goldController;
     private readonly ITowerController _towerController;
+    private readonly IObjectPooler _objectPooler;
 
     private bool _gameStarted = false;
 
-    public GameplayController(ILevelSetter levelSetter, IEnemyController enemyController, IHealthController healthController, IGoldController goldController, ITowerController towerController)
+    public GameplayController(ILevelSetter levelSetter, IEnemyController enemyController, IHealthController healthController, IGoldController goldController, ITowerController towerController, IObjectPooler objectPooler)
     {
         _levelSetter = levelSetter;
         _enemyController = enemyController;
         _healthController = healthController;
         _goldController = goldController;
         _towerController = towerController;
+        _objectPooler = objectPooler;
+
+        _healthController.HealthIsZero += EndGame;
+    }
+
+    ~GameplayController()
+    {
+        _healthController.HealthIsZero -= EndGame;
     }
 
     public void Start()
     {
-        _levelSetter.DataLoaded += StartGame;
+        _levelSetter.DataLoaded += PrepareGame;
         _levelSetter.SetUpLevel(1);
     }
 
@@ -33,14 +48,29 @@
         _enemyController.Update();
     }
 
-    private void StartGame(LevelData levelData)
+    private void PrepareGame(LevelData levelData)
     {
-        _levelSetter.DataLoaded -= StartGame;
+        _levelSetter.DataLoaded -= PrepareGame;
         _towerController.SetTowers(levelData.TowerPositions);
+        _enemyController.SetWaypoints(levelData.WaypointPositions);
+        StartGame();
+    }
+
+    private void StartGame()
+    {
         _healthController.ResetHealth();
         _goldController.ResetGold();
-        _enemyController.SetWaypoints(levelData.WaypointPositions);
         _enemyController.BeginAttack();
         _gameStarted = true;
+        GameStarted?.Invoke();
+    }
+
+    private void EndGame()
+    {
+        _gameStarted = false;
+        _objectPooler.HideByTag("Enemy");
+        _objectPooler.HideByTag("Bullet");
+        var enemiesKilled = _enemyController.GetEnemiesKilled();
+        GameEnded?.Invoke(enemiesKilled);
     }
 }

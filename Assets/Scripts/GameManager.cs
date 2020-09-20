@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject _goldViewControllerPrefab;
     [SerializeField]
+    private GameObject _gameOverViewControllerPrefab;
+    [SerializeField]
     private GameObject _objectPoolerPrefab;
 
     private GameplayController _gameplayController;
@@ -19,15 +21,17 @@ public class GameManager : MonoBehaviour
     {
         var viewController = Instantiate(_viewControllerPrefab).GetComponent<ViewController>();
         var levelViewController = Instantiate(_levelViewControllerPrefab).GetComponent<LevelViewController>();
-        levelViewController.Init(viewController.Canvas);
+        levelViewController.Init(viewController.CanvasBackground);
         var healthViewController = Instantiate(_healthViewControllerPrefab).GetComponent<HealthViewController>();
-        healthViewController.Init(viewController.Canvas);
+        healthViewController.Init(viewController.CanvasUI);
         var goldViewController = Instantiate(_goldViewControllerPrefab).GetComponent<GoldViewController>();
-        goldViewController.Init(viewController.Canvas);
+        goldViewController.Init(viewController.CanvasUI);
+        var gameOverViewController = Instantiate(_gameOverViewControllerPrefab).GetComponent<GameOverViewController>();
+        gameOverViewController.Init(viewController.CanvasUI);
         var enemyViewController = new GameObject("EnemyVewController", typeof(EnemyViewController)).GetComponent<EnemyViewController>();
         var towerViewController = new GameObject("TowerVewController", typeof(TowerViewController)).GetComponent<TowerViewController>();
 
-        SetDependencies(levelViewController, enemyViewController, healthViewController, goldViewController, towerViewController);
+        SetDependencies(levelViewController, enemyViewController, healthViewController, goldViewController, gameOverViewController, towerViewController);
     }
     void Start()
     {
@@ -39,7 +43,7 @@ public class GameManager : MonoBehaviour
         _gameplayController.Update();
     }
 
-    private void SetDependencies(LevelViewController levelViewController, EnemyViewController enemyViewController, HealthViewController healthViewController, GoldViewController goldViewController, TowerViewController towerViewController)
+    private void SetDependencies(LevelViewController levelViewController, EnemyViewController enemyViewController, HealthViewController healthViewController, GoldViewController goldViewController, GameOverViewController gameOverViewController, TowerViewController towerViewController)
     {
         var assetLoader = new AddressableAssetLoader<LevelData>();
         var levelSetter = new LevelSetter(assetLoader);
@@ -49,12 +53,13 @@ public class GameManager : MonoBehaviour
         objectPooler.Init();
         var enemyController = new EnemyController(objectPooler);
         var towerController = new TowerController(objectPooler);
-        _gameplayController = new GameplayController(levelSetter, enemyController, healthController, goldController, towerController);
+        _gameplayController = new GameplayController(levelSetter, enemyController, healthController, goldController, towerController, objectPooler);
 
         levelViewController.SetCallbacks(levelSetter);
         enemyViewController.SetCallbacks(levelSetter, enemyController);
         healthViewController.SetCallbacks(healthController);
         goldViewController.SetCallbacks(goldController);
+        gameOverViewController.SetCallbacks(_gameplayController);
         towerViewController.SetCallbacks(towerController);
     }
 }

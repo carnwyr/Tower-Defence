@@ -7,7 +7,7 @@ public class GoldController : IGoldController
 
     private Action _unsubscribe;
 
-    private int _gold;
+    public int _gold;
 
     public GoldController(IObjectPooler enemyPooler)
     {
@@ -40,6 +40,11 @@ public class GoldController : IGoldController
         {
             enemy.GetComponent<Enemy>().EnemyDied -= ChangeGold;
         }
+    }
+
+    public int GetGold()
+    {
+        return _gold;
     }
 
     public void ResetGold()
