@@ -9,9 +9,12 @@ public class GameOverViewController : MonoBehaviour
     private GameObject _menuPrefab;
     [SerializeField]
     private GameObject _enemiesTextPrefab;
+    [SerializeField]
+    private GameObject _restartButtonPrefab;
 
     private GameObject _menu;
     private GameObject _enemiesText;
+    private GameObject _restartButton;
     private Action _unsubscribe;
 
     public void Init(GameObject canvas)
@@ -20,6 +23,8 @@ public class GameOverViewController : MonoBehaviour
         _menu.transform.SetParent(canvas.transform, false);
         _enemiesText = Instantiate(_enemiesTextPrefab);
         _enemiesText.transform.SetParent(_menu.transform, false);
+        _restartButton = Instantiate(_restartButtonPrefab);
+        _restartButton.transform.SetParent(_menu.transform, false);
         _menu.SetActive(false);
     }
 
@@ -32,6 +37,8 @@ public class GameOverViewController : MonoBehaviour
     {
         gameplayController.GameEnded += DisplayGameOver;
         gameplayController.GameStarted += HideGameOver;
+
+        _restartButton.GetComponent<Button>().onClick.AddListener(gameplayController.StartGame);
 
         _unsubscribe = () => RemoveCallbacks(gameplayController);
     }
@@ -48,7 +55,7 @@ public class GameOverViewController : MonoBehaviour
     private void DisplayGameOver(int enemiesCount)
     {
         var enemiesText = _enemiesText.GetComponent<Text>();
-        enemiesText.text = "Killed enemies: " + enemiesCount.ToString();
+        enemiesText.text = "Enemies killed: " + enemiesCount.ToString();
         _menu.SetActive(true);
     }
 

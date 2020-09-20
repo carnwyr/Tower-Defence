@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using UnityEngine.EventSystems;
 
 public class GameplayController
 {
@@ -56,8 +56,9 @@ public class GameplayController
         StartGame();
     }
 
-    private void StartGame()
+    public void StartGame()
     {
+        UnityEngine.Debug.Log("started");
         _healthController.ResetHealth();
         _goldController.ResetGold();
         _enemyController.BeginAttack();

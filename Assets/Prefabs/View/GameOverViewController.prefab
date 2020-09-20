@@ -47,3 +47,5 @@ MonoBehaviour:
     type: 3}
   _enemiesTextPrefab: {fileID: 3920410752568890756, guid: 1bc706cfbaecb0b4690257ce25b6e131,
     type: 3}
+  _restartButtonPrefab: {fileID: 8405689013722206121, guid: 1704fef4d03b7f44e99f360c8b3139cc,
+    type: 3}
