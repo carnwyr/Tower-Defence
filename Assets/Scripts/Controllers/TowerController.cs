@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TowerController : ITowerController
 {
@@ -37,6 +38,8 @@ public class TowerController : ITowerController
         }
         var tower = pooledObj.GetComponent<Tower>();
         tower.TowerLevelUp += HandleLevelUp;
+        tower.gameObject.GetComponentInChildren<Canvas>().worldCamera = Camera.main;
+        tower.gameObject.GetComponentInChildren<Text>().text = _levelUpCost.ToString();
     }
 
     private void RemoveCallbacks()
