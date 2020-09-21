@@ -20,19 +20,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        var viewController = Instantiate(_viewControllerPrefab).GetComponent<ViewController>();
-        var levelViewController = Instantiate(_levelViewControllerPrefab).GetComponent<LevelViewController>();
-        levelViewController.Init(viewController.CanvasBackground);
-        var healthViewController = Instantiate(_healthViewControllerPrefab).GetComponent<HealthViewController>();
-        healthViewController.Init(viewController.CanvasUI);
-        var goldViewController = Instantiate(_goldViewControllerPrefab).GetComponent<GoldViewController>();
-        goldViewController.Init(viewController.CanvasUI);
-        var gameOverViewController = Instantiate(_gameOverViewControllerPrefab).GetComponent<GameOverViewController>();
-        gameOverViewController.Init(viewController.CanvasUI);
-        var enemyViewController = new GameObject("EnemyVewController", typeof(EnemyViewController)).GetComponent<EnemyViewController>();
-        var towerViewController = new GameObject("TowerVewController", typeof(TowerViewController)).GetComponent<TowerViewController>();
-
-        SetDependencies(levelViewController, enemyViewController, healthViewController, goldViewController, gameOverViewController, towerViewController);
+        SetDependencies();
     }
     void Start()
     {
@@ -45,8 +33,21 @@ public class GameManager : MonoBehaviour
         _gameplayController.Update();
     }
 
-    private void SetDependencies(LevelViewController levelViewController, EnemyViewController enemyViewController, HealthViewController healthViewController, GoldViewController goldViewController, GameOverViewController gameOverViewController, TowerViewController towerViewController)
+    private void SetDependencies()
     {
+        var viewController = Instantiate(_viewControllerPrefab).GetComponent<ViewController>();
+        var levelViewController = Instantiate(_levelViewControllerPrefab).GetComponent<LevelViewController>();
+        var healthViewController = Instantiate(_healthViewControllerPrefab).GetComponent<HealthViewController>();
+        var goldViewController = Instantiate(_goldViewControllerPrefab).GetComponent<GoldViewController>();
+        var gameOverViewController = Instantiate(_gameOverViewControllerPrefab).GetComponent<GameOverViewController>();
+        var enemyViewController = new GameObject("EnemyVewController", typeof(EnemyViewController)).GetComponent<EnemyViewController>();
+        var towerViewController = new GameObject("TowerVewController", typeof(TowerViewController)).GetComponent<TowerViewController>();
+
+        levelViewController.Init(viewController.CanvasBackground);
+        healthViewController.Init(viewController.CanvasUI);
+        goldViewController.Init(viewController.CanvasUI);
+        gameOverViewController.Init(viewController.CanvasUI);
+
         var assetLoader = new AddressableAssetLoader<LevelData>();
         var levelSetter = new LevelSetter(assetLoader);
         var objectPooler = Instantiate(_objectPoolerPrefab).GetComponent<ObjectPooler>();
@@ -55,12 +56,8 @@ public class GameManager : MonoBehaviour
         var enemyController = new EnemyController(objectPooler, enemyViewController);
         var towerController = new TowerController(objectPooler, goldController);
         objectPooler.Init();
+
         _gameplayController = new GameplayController(levelSetter, enemyController, healthController, goldController, towerController, objectPooler);
-        #if UNITY_ANDROID
-            _inputController = new TouchInputController();
-        #else
-            _inputController = new MouseInputController();
-        #endif
 
         levelViewController.SetCallbacks(levelSetter);
         enemyViewController.SetCallbacks(levelSetter, enemyController, _gameplayController);
@@ -68,5 +65,11 @@ public class GameManager : MonoBehaviour
         goldViewController.SetCallbacks(goldController);
         gameOverViewController.SetCallbacks(_gameplayController);
         towerViewController.SetCallbacks(towerController);
+
+        #if UNITY_ANDROID
+                    _inputController = new TouchInputController();
+        #else
+                _inputController = new MouseInputController();
+        #endif
     }
 }

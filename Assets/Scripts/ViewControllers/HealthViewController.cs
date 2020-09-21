@@ -8,12 +8,6 @@ public class HealthViewController : MonoBehaviour
     private GameObject _healthPrefab;
 
     private Text _health;
-    private Action _unsubscribe;
-
-    private void OnDestroy()
-    {
-        _unsubscribe();
-    }
 
     public void Init(GameObject canvas)
     {
@@ -26,16 +20,6 @@ public class HealthViewController : MonoBehaviour
     public void SetCallbacks(IHealthController healthController)
     {
         healthController.HealthChanged += SetHealth;
-
-        _unsubscribe = () => RemoveCallbacks(healthController);
-    }
-
-    private void RemoveCallbacks(IHealthController healthController)
-    {
-        if (healthController != null)
-        {
-            healthController.HealthChanged -= SetHealth;
-        }
     }
 
     private void SetHealth(int health)

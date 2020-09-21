@@ -15,7 +15,6 @@ public class GameOverViewController : MonoBehaviour
     private GameObject _menu;
     private GameObject _enemiesText;
     private GameObject _restartButton;
-    private Action _unsubscribe;
 
     public void Init(GameObject canvas)
     {
@@ -28,28 +27,12 @@ public class GameOverViewController : MonoBehaviour
         _menu.SetActive(false);
     }
 
-    private void OnDestroy()
-    {
-        _unsubscribe();
-    }
-
     public void SetCallbacks(GameplayController gameplayController)
     {
         gameplayController.GameEnded += DisplayGameOver;
         gameplayController.GameStarted += HideGameOver;
 
         _restartButton.GetComponent<Button>().onClick.AddListener(gameplayController.StartGame);
-
-        _unsubscribe = () => RemoveCallbacks(gameplayController);
-    }
-
-    private void RemoveCallbacks(GameplayController gameplayController)
-    {
-        if (gameplayController != null)
-        {
-            gameplayController.GameEnded -= DisplayGameOver;
-            gameplayController.GameStarted -= HideGameOver;
-        }
     }
 
     private void DisplayGameOver(int enemiesCount)

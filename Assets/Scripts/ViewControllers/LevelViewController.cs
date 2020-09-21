@@ -8,12 +8,6 @@ public class LevelViewController : MonoBehaviour
     private GameObject _backgroundPrefab;
 
     private Image _background;
-    private Action _unsubscribe;
-
-    private void OnDestroy()
-    {
-        _unsubscribe();
-    }
 
     public void Init(GameObject canvas)
     {
@@ -26,16 +20,6 @@ public class LevelViewController : MonoBehaviour
     public void SetCallbacks(ILevelSetter levelSetter)
     {
         levelSetter.DataLoaded += SetBackground;
-
-        _unsubscribe = () => RemoveCallbacks(levelSetter);
-    }
-
-    private void RemoveCallbacks(ILevelSetter levelSetter)
-    {
-        if (levelSetter != null)
-        {
-            levelSetter.DataLoaded -= SetBackground;
-        }
     }
 
     private void SetBackground(LevelData levelData)

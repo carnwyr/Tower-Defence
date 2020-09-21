@@ -8,12 +8,6 @@ public class GoldViewController : MonoBehaviour
     private GameObject _GoldPrefab;
 
     private Text _gold;
-    private Action _unsubscribe;
-
-    private void OnDestroy()
-    {
-        _unsubscribe();
-    }
 
     public void Init(GameObject canvas)
     {
@@ -26,16 +20,6 @@ public class GoldViewController : MonoBehaviour
     public void SetCallbacks(IGoldController goldController)
     {
         goldController.GoldChanged += SetGold;
-
-        _unsubscribe = () => RemoveCallbacks(goldController);
-    }
-
-    private void RemoveCallbacks(IGoldController goldController)
-    {
-        if (goldController != null)
-        {
-            goldController.GoldChanged -= SetGold;
-        }
     }
 
     private void SetGold(int gold)

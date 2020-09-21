@@ -7,8 +7,6 @@ public class TowerController : ITowerController
 {
     public event Action<List<GameObject>, List<Vector2>> TowersPrepared;
 
-    private Action _unsubscribe;
-
     private readonly IObjectPooler _objectPooler;
     private readonly IGoldController _goldController;
 
@@ -21,13 +19,6 @@ public class TowerController : ITowerController
         _goldController = goldController;
         _objectPooler = objectPooler;
         _objectPooler.NewObjectCreated += SubscribeToNewTowers;
-
-        _unsubscribe = () => RemoveCallbacks();
-    }
-
-    ~TowerController()
-    {
-        _unsubscribe();
     }
 
     private void SubscribeToNewTowers(GameObject pooledObj)
@@ -40,17 +31,6 @@ public class TowerController : ITowerController
         tower.TowerLevelUp += HandleLevelUp;
         tower.gameObject.GetComponentInChildren<Canvas>().worldCamera = Camera.main;
         tower.gameObject.GetComponentInChildren<Text>().text = "Cost: " + _levelUpCost.ToString();
-    }
-
-    private void RemoveCallbacks()
-    {
-        _objectPooler.NewObjectCreated -= SubscribeToNewTowers;
-
-        var towers = _objectPooler.GetFullList("Tower");
-        foreach (var tower in towers)
-        {
-            tower.GetComponent<Tower>().TowerLevelUp -= HandleLevelUp;
-        }
     }
 
     private void HandleLevelUp(Tower tower)

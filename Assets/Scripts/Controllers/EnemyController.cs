@@ -15,8 +15,6 @@ public class EnemyController : IEnemyController
 
     public event Action<List<GameObject>> NewWave;
 
-    private Action _unsubscribe;
-
     private readonly IObjectPooler _enemyPooler;
 
     private readonly int _enemyVariation = 3;
@@ -47,14 +45,7 @@ public class EnemyController : IEnemyController
 
         enemyViewController.WaveEnded += ResumeWaveTimer;
 
-        _unsubscribe = () => RemoveCallbacks(enemyViewController);
-
         ReadConfig();
-    }
-
-    ~EnemyController()
-    {
-        _unsubscribe();
     }
 
     private void SubscribeToNewEnemies(GameObject pooledObj)
@@ -65,18 +56,6 @@ public class EnemyController : IEnemyController
         }
         var enemy = pooledObj.GetComponent<Enemy>();
         enemy.EnemyDied += IncreaseEnemyCount;
-    }
-
-    private void RemoveCallbacks(EnemyViewController enemyViewController)
-    {
-        _enemyPooler.NewObjectCreated -= SubscribeToNewEnemies;
-        enemyViewController.WaveEnded -= ResumeWaveTimer;
-
-        var enemies = _enemyPooler.GetFullList("Enemy");
-        foreach (var enemy in enemies)
-        {
-            enemy.GetComponent<Enemy>().EnemyDied -= IncreaseEnemyCount;
-        }
     }
 
     private void ResumeWaveTimer()

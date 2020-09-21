@@ -5,20 +5,11 @@ public class GoldController : IGoldController
 {
     public event Action<int> GoldChanged;
 
-    private Action _unsubscribe;
-
     public int _gold;
 
     public GoldController(IObjectPooler enemyPooler)
     {
         enemyPooler.NewObjectCreated += SubscribeToNewEnemies;
-
-        _unsubscribe = () => RemoveCallbacks(enemyPooler);
-    }
-
-    ~GoldController()
-    {
-        _unsubscribe();
     }
 
     private void SubscribeToNewEnemies(GameObject pooledObj)
@@ -29,17 +20,6 @@ public class GoldController : IGoldController
         }
         var enemy = pooledObj.GetComponent<Enemy>();
         enemy.EnemyDied += ChangeGold;
-    }
-
-    private void RemoveCallbacks(IObjectPooler enemyPooler)
-    {
-        enemyPooler.NewObjectCreated -= SubscribeToNewEnemies;
-
-        var enemies = enemyPooler.GetFullList("Enemy");
-        foreach (var enemy in enemies)
-        {
-            enemy.GetComponent<Enemy>().EnemyDied -= ChangeGold;
-        }
     }
 
     public int GetGold()
