@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         var objectPooler = Instantiate(_objectPoolerPrefab).GetComponent<ObjectPooler>();
         var healthController = new HealthController(objectPooler);
         var goldController = new GoldController(objectPooler);
-        var enemyController = new EnemyController(objectPooler);
+        var enemyController = new EnemyController(objectPooler, enemyViewController);
         var towerController = new TowerController(objectPooler, goldController);
         objectPooler.Init();
         _gameplayController = new GameplayController(levelSetter, enemyController, healthController, goldController, towerController, objectPooler);

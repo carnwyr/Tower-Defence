@@ -21,6 +21,7 @@ public class EnemyController : IEnemyController
     private int _waveCount = 0;
     private float _timer = 0.0f;
     private int _enemiesKilled = 0;
+    private bool _creatingWave = false;
 
     private int _baseDamage = 5;
     private int _baseHealth = 10;
@@ -30,12 +31,14 @@ public class EnemyController : IEnemyController
     private int _currentHealth = 10;
     private int _currentGold = 10;
 
-    public EnemyController(IObjectPooler objectPooler)
+    public EnemyController(IObjectPooler objectPooler, EnemyViewController enemyViewController)
     {
         _enemyPooler = objectPooler;
         _enemyPooler.NewObjectCreated += SubscribeToNewEnemies;
 
-        _unsubscribe = () => RemoveCallbacks();
+        enemyViewController.WaveEnded += ResumeWaveTimer;
+
+        _unsubscribe = () => RemoveCallbacks(enemyViewController);
     }
 
     ~EnemyController()
@@ -53,15 +56,21 @@ public class EnemyController : IEnemyController
         enemy.EnemyDied += IncreaseEnemyCount;
     }
 
-    private void RemoveCallbacks()
+    private void RemoveCallbacks(EnemyViewController enemyViewController)
     {
         _enemyPooler.NewObjectCreated -= SubscribeToNewEnemies;
+        enemyViewController.WaveEnded -= ResumeWaveTimer;
 
         var enemies = _enemyPooler.GetFullList("Enemy");
         foreach (var enemy in enemies)
         {
             enemy.GetComponent<Enemy>().EnemyDied -= IncreaseEnemyCount;
         }
+    }
+
+    private void ResumeWaveTimer()
+    {
+        _creatingWave = false;
     }
 
     private void IncreaseEnemyCount(int gold)
@@ -79,6 +88,7 @@ public class EnemyController : IEnemyController
         _timer = 0.0f;
         _waveCount = 0;
         _enemiesKilled = 0;
+        _creatingWave = false;
         _currentDamage = _baseDamage;
         _currentHealth = _baseHealth;
         _currentGold = _baseGold;
@@ -87,6 +97,10 @@ public class EnemyController : IEnemyController
 
     public void Update()
     {
+        if (_creatingWave)
+        {
+            return;
+        }
         _timer += Time.deltaTime;
         if (_timer > _timeBetweenWaves)
         {
@@ -98,6 +112,7 @@ public class EnemyController : IEnemyController
     private void CreateNewWave()
     {
         _waveCount++;
+        _creatingWave = true;
         var enemyCount = UnityEngine.Random.Range(_waveCount, _waveCount + _enemyVariation);
         var enemies = _enemyPooler.GetSeveral("Enemy", enemyCount);
         foreach (var enemy in enemies)

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class EnemyViewController : MonoBehaviour
 {
+    public event Action WaveEnded;
+
     private Action _unsubscribe;
     private Vector2 _spawnPosition;
     private Coroutine _coroutine;
@@ -56,6 +58,7 @@ public class EnemyViewController : MonoBehaviour
             SpawnEnemy(enemy);
             yield return new WaitForSeconds(1f);
         }
+        WaveEnded?.Invoke();
     }
 
     private void SpawnEnemy(GameObject enemy)
@@ -66,6 +69,9 @@ public class EnemyViewController : MonoBehaviour
     private void StopSpawning(int enemies)
     {
         if (_coroutine != null)
+        {
             StopCoroutine(_coroutine);
+            WaveEnded?.Invoke();
+        }
     }
 }
