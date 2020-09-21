@@ -65,7 +65,10 @@ public class Tower : MonoBehaviour
     public void LevelUpStats()
     {
         _damage += _damageGain;
-        _attackCooldown -= _cooldownDecrease;
+        if (_attackCooldown > 0.5)
+        {
+            _attackCooldown -= _cooldownDecrease;
+        }
     }
 
     public void SetStats(int damage, float cooldown)
