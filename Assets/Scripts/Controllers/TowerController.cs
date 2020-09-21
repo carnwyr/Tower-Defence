@@ -39,7 +39,7 @@ public class TowerController : ITowerController
         var tower = pooledObj.GetComponent<Tower>();
         tower.TowerLevelUp += HandleLevelUp;
         tower.gameObject.GetComponentInChildren<Canvas>().worldCamera = Camera.main;
-        tower.gameObject.GetComponentInChildren<Text>().text = _levelUpCost.ToString();
+        tower.gameObject.GetComponentInChildren<Text>().text = "Cost: " + _levelUpCost.ToString();
     }
 
     private void RemoveCallbacks()

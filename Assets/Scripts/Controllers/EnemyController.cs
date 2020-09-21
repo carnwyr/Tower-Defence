@@ -1,22 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEngine;
 
 public class EnemyController : IEnemyController
 {
+
+    [System.Serializable]
+    public class Config
+    {
+        public float waveDelay;
+    }
+
     public event Action<List<GameObject>> NewWave;
 
     private Action _unsubscribe;
 
     private readonly IObjectPooler _enemyPooler;
 
-    private readonly float _timeBetweenWaves = 10;
     private readonly int _enemyVariation = 3;
     private readonly int _damageGain = 3;
     private readonly int _healthGain = 4;
     private readonly int _goldGain = 5;
 
     private List<Vector2> _waypoints;
+    private float _timeBetweenWaves = 10;
 
     private int _waveCount = 0;
     private float _timer = 0.0f;
@@ -39,6 +48,8 @@ public class EnemyController : IEnemyController
         enemyViewController.WaveEnded += ResumeWaveTimer;
 
         _unsubscribe = () => RemoveCallbacks(enemyViewController);
+
+        ReadConfig();
     }
 
     ~EnemyController()
@@ -71,6 +82,19 @@ public class EnemyController : IEnemyController
     private void ResumeWaveTimer()
     {
         _creatingWave = false;
+    }
+
+    private void ReadConfig()
+    {
+        var path = Path.Combine(Application.dataPath, "config.json");
+        if (!File.Exists(path))
+        {
+            string template = "{\n\t\"waveDelay\": 5\n}";
+            File.WriteAllText(path, template, Encoding.UTF8);
+        }
+        var jsonString = File.ReadAllText(path);
+        Config config = JsonUtility.FromJson<Config>(jsonString);
+        _timeBetweenWaves = config.waveDelay;
     }
 
     private void IncreaseEnemyCount(int gold)
